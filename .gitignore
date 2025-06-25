@@ -30,3 +30,5 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+last_run.json
