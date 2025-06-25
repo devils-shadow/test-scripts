@@ -17,19 +17,19 @@ for f in sample720p.ivf sample.ogg; do
   fi
 done
 
-ARGS="-rooms $NUM_ROOMS -bots $BOTS_PER_ROOM -d $DURATION \
--url wss://meet.cst.ro -token-url https://meet.cst.ro/token \
--video sample720p.ivf -audio sample.ogg"
+ARGS=(-rooms "$NUM_ROOMS" -bots "$BOTS_PER_ROOM" -d "$DURATION" \
+  -url wss://meet.cst.ro -token-url https://meet.cst.ro/token \
+  -video sample720p.ivf -audio sample.ogg)
 
 if [[ "$DEBUG_LOG" =~ ^[yY]$ ]]; then
-  ARGS="$ARGS -debug=true"
+  ARGS+=(-debug=true)
   echo "🐛 Debug logging enabled"
 else
   echo "🐛 Debug logging disabled"
 fi
 
 if [[ "$SAVE_LOG" =~ ^[yY]$ ]]; then
-  ARGS="$ARGS -log=true"
+  ARGS+=(-log=true)
   echo "🗒️ Logging enabled → output: last_run.json"
 else
   echo "🗒️ Logging disabled"
@@ -40,4 +40,4 @@ echo "🎯 Launching $((NUM_ROOMS * BOTS_PER_ROOM)) bots across $NUM_ROOMS room(
 echo "🕒 Each bot will stay connected for $DURATION"
 echo ""
 
-go run loadbot.go $ARGS
+go run loadbot.go "${ARGS[@]}"
