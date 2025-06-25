@@ -13,14 +13,17 @@ import (
 	"time"
 
 	lksdk "github.com/livekit/server-sdk-go/v2"
+	webrtc "github.com/pion/webrtc/v3"
 )
 
 type logEntry struct {
-	Time  time.Time `json:"time"`
-	Bot   string    `json:"bot"`
-	Room  string    `json:"room"`
-	Event string    `json:"event"`
-	Error string    `json:"error,omitempty"`
+	Time        time.Time `json:"time"`
+	Bot         string    `json:"bot"`
+	Room        string    `json:"room"`
+	Participant string    `json:"participant,omitempty"`
+	Track       string    `json:"track,omitempty"`
+	Event       string    `json:"event"`
+	Error       string    `json:"error,omitempty"`
 }
 
 func main() {
@@ -79,9 +82,9 @@ func main() {
 			wg.Add(1)
 			go func(room, id string) {
 				defer wg.Done()
-				logEvt := func(event string, err error) {
+				logEvt := func(event, participant, track string, err error) {
 					if logCh != nil {
-						e := logEntry{Time: time.Now(), Bot: id, Room: room, Event: event}
+						e := logEntry{Time: time.Now(), Bot: id, Room: room, Event: event, Participant: participant, Track: track}
 						if err != nil {
 							e.Error = err.Error()
 						}
@@ -92,17 +95,28 @@ func main() {
 				token, err := fetchToken(*tokenURL, room, id)
 				if err != nil {
 					log.Printf("token fetch error: %v", err)
-					logEvt("token_error", err)
+					logEvt("token_error", "", "", err)
 					return
 				}
 				roomConn, err := lksdk.ConnectToRoomWithToken(*url, token, nil)
 				if err != nil {
 					log.Printf("connect error: %v", err)
-					logEvt("connect_error", err)
+					logEvt("connect_error", "", "", err)
 					return
 				}
 				defer roomConn.Disconnect()
-				logEvt("join", nil)
+
+				roomConn.OnTrackPublished(func(pub *lksdk.RemoteTrackPublication, rp *lksdk.RemoteParticipant) {
+					logEvt("track_published", rp.Identity(), pub.SID(), nil)
+				})
+				roomConn.OnTrackSubscribed(func(tr *webrtc.TrackRemote, pub *lksdk.RemoteTrackPublication, rp *lksdk.RemoteParticipant) {
+					logEvt("track_subscribed", rp.Identity(), tr.ID(), nil)
+				})
+				roomConn.OnTrackSubscriptionFailed(func(trackID string, rp *lksdk.RemoteParticipant) {
+					logEvt("track_subscription_failed", rp.Identity(), trackID, nil)
+				})
+
+				logEvt("join", "", "", nil)
 
 				if *debug {
 					log.Printf("%s joined %s", id, room)
@@ -111,20 +125,20 @@ func main() {
 				if vt, err := lksdk.NewLocalFileTrack(*videoFile); err == nil {
 					if _, err := roomConn.LocalParticipant.PublishTrack(vt, nil); err != nil {
 						log.Printf("video publish error: %v", err)
-						logEvt("video_error", err)
+						logEvt("video_error", "", "", err)
 					}
 				} else {
 					log.Printf("video track error: %v", err)
-					logEvt("video_error", err)
+					logEvt("video_error", "", "", err)
 				}
 				if at, err := lksdk.NewLocalFileTrack(*audioFile); err == nil {
 					if _, err := roomConn.LocalParticipant.PublishTrack(at, nil); err != nil {
 						log.Printf("audio publish error: %v", err)
-						logEvt("audio_error", err)
+						logEvt("audio_error", "", "", err)
 					}
 				} else {
 					log.Printf("audio track error: %v", err)
-					logEvt("audio_error", err)
+					logEvt("audio_error", "", "", err)
 				}
 
 				select {
@@ -134,7 +148,7 @@ func main() {
 						log.Printf("%s interrupted", id)
 					}
 				}
-				logEvt("leave", nil)
+				logEvt("leave", "", "", nil)
 			}(roomName, identity)
 		}
 	}

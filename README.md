@@ -34,5 +34,5 @@ See `go run loadbot.go -h` for all available flags.
 
 Passing the `-log` flag (or answering `y` when prompted by the script) will
 write NDJSON formatted logs to `last_run.json`. Each line describes a bot event
-(join, leave, errors, etc.) with a timestamp, making it easier to inspect or
-process later.
+(join, leave, track events, errors, etc.) with a timestamp, making it easier to
+inspect or process later.
