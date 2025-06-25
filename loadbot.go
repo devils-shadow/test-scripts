@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -71,15 +72,15 @@ func main() {
 		}()
 	}
 
-	stop := make(chan os.Signal, 1)
-	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
 
 	for i := 0; i < *rooms; i++ {
 		roomName := fmt.Sprintf("%s-%02d", *roomPrefix, i)
 		for j := 0; j < *bots; j++ {
 			identity := fmt.Sprintf("bot-%03d-%d", i*(*bots)+j, time.Now().UnixMilli())
 			wg.Add(1)
-			go func(room, id string) {
+			go func(ctx context.Context, room, id string) {
 				defer wg.Done()
 				logEvt := func(event string, err error) {
 					if logCh != nil {
@@ -131,13 +132,13 @@ func main() {
 
 				select {
 				case <-time.After(*duration):
-				case <-stop:
+				case <-ctx.Done():
 					if *debug {
 						log.Printf("%s interrupted", id)
 					}
 				}
 				logEvt("leave", nil)
-			}(roomName, identity)
+			}(ctx, roomName, identity)
 		}
 	}
 	wg.Wait()
