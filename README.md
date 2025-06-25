@@ -8,8 +8,12 @@ participants against a LiveKit server for basic stress testing.
 
 1. Install **Go 1.24.3** on your machine.
 2. Clone this repository and change into the project directory.
-3. Place `sample720p.ivf` and `sample.ogg` media files in the same directory.
-   These files are published by each bot when it joins a room.
+3. Download `sample720p.ivf` and `sample.ogg` from the [LiveKit example
+   media folder](https://github.com/livekit/client-sdk-js/tree/main/examples/media)
+   and place them in this directory. These files are published by each bot when
+   it joins a room.
+   If you have `curl` installed you can also run `./get-media.sh` to fetch them
+   automatically.
 
 ## Running the load test
 
