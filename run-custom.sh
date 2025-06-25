@@ -13,6 +13,7 @@ read -p "💾 Save logs to JSON file? (y/n): " SAVE_LOG
 for f in sample720p.ivf sample.ogg; do
   if [[ ! -f $f ]]; then
     echo "Missing media file: $f" >&2
+    echo "Create it using ffmpeg as described in the README." >&2
     exit 1
   fi
 done

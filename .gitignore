@@ -32,3 +32,7 @@ go.work.sum
 # .vscode/
 
 last_run.json
+
+# Sample media files
+sample720p.ivf
+sample.ogg
