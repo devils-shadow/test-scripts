@@ -11,9 +11,11 @@ participants against a LiveKit server for basic stress testing.
 3. Ensure [Git LFS](https://git-lfs.com/) is installed so the sample media
    files (`sample720p.ivf` and `sample.ogg`) are downloaded automatically when
    cloning. If they are missing, you can grab them from the [LiveKit example
-   media folder](https://github.com/livekit/client-sdk-js/tree/main/examples/media)
+  media folder](https://github.com/livekit/client-sdk-js/tree/main/examples/media)
   and place them in this directory. These files are published by each bot when
   it joins a room.
+  The provided `sample720p.ivf` and `sample.ogg` each contain about one minute
+  of test video and audio for simulated camera and microphone input.
 
 ## Running the load test
 
