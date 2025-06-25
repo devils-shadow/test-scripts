@@ -15,6 +15,15 @@ participants against a LiveKit server for basic stress testing.
    If you have `curl` installed you can also run `./get-media.sh` to fetch them
    automatically.
 
+## Stubbed dependency
+
+This repository includes a minimal stub of `github.com/livekit/server-sdk-go`
+under `stubs/`. The `go.mod` file uses a `replace` directive to point to this
+stub so the project can compile without internet access.
+
+To perform live testing with the real SDK, remove the `replace` line from
+`go.mod` and run `go mod download` to fetch the actual dependency.
+
 ## Running the load test
 
 The easiest way to run the test is via the interactive helper script:
