@@ -37,6 +37,15 @@ func main() {
 
 	flag.Parse()
 
+	if _, err := os.Stat(*videoFile); err != nil {
+		log.Printf("video file error: %v", err)
+		os.Exit(1)
+	}
+	if _, err := os.Stat(*audioFile); err != nil {
+		log.Printf("audio file error: %v", err)
+		os.Exit(1)
+	}
+
 	totalBots := (*rooms) * (*bots)
 	fmt.Printf("Spawning %d bots across %d room(s)...\n", totalBots, *rooms)
 
