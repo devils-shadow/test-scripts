@@ -100,10 +100,22 @@ func main() {
 				}
 
 				if vt, err := lksdk.NewLocalFileTrack(*videoFile); err == nil {
-					roomConn.LocalParticipant.PublishTrack(vt, nil)
+					if _, err := roomConn.LocalParticipant.PublishTrack(vt, nil); err != nil {
+						log.Printf("video publish error: %v", err)
+						logEvt("video_error", err)
+					}
+				} else {
+					log.Printf("video track error: %v", err)
+					logEvt("video_error", err)
 				}
 				if at, err := lksdk.NewLocalFileTrack(*audioFile); err == nil {
-					roomConn.LocalParticipant.PublishTrack(at, nil)
+					if _, err := roomConn.LocalParticipant.PublishTrack(at, nil); err != nil {
+						log.Printf("audio publish error: %v", err)
+						logEvt("audio_error", err)
+					}
+				} else {
+					log.Printf("audio track error: %v", err)
+					logEvt("audio_error", err)
 				}
 
 				select {
