@@ -17,12 +17,19 @@ participants against a LiveKit server for basic stress testing.
 
 ## Stubbed dependency
 
-This repository includes a minimal stub of `github.com/livekit/server-sdk-go`
-under `stubs/`. The `go.mod` file uses a `replace` directive to point to this
-stub so the project can compile without internet access.
+The project now depends on the real
+`github.com/livekit/server-sdk-go/v2` module in `go.mod`. A minimal stub of
+the SDK is still provided under `stubs/` for situations where you need to build
+without network access.
 
-To perform live testing with the real SDK, remove the `replace` line from
-`go.mod` and run `go mod download` to fetch the actual dependency.
+To use the stub, add the following line to `go.mod`:
+
+```
+replace github.com/livekit/server-sdk-go/v2 => ./stubs/github.com/livekit/server-sdk-go/v2
+```
+
+After adding the replace directive, run `go mod tidy` so Go picks up the local
+version. Remove the line again when you want to fetch the real dependency.
 
 ## Setup script
 
