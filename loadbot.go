@@ -112,7 +112,11 @@ func main() {
 				}
 
 				if vt, err := lksdk.NewLocalFileTrack(*videoFile); err == nil {
-					if _, err := roomConn.LocalParticipant.PublishTrack(vt, nil); err != nil {
+					pubOpts := &lksdk.TrackPublicationOptions{
+						VideoWidth:  1280,
+						VideoHeight: 720,
+					}
+					if _, err := roomConn.LocalParticipant.PublishTrack(vt, pubOpts); err != nil {
 						log.Printf("video publish error: %v", err)
 						logEvt("video_error", err)
 					}
