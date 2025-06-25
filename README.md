@@ -24,6 +24,15 @@ stub so the project can compile without internet access.
 To perform live testing with the real SDK, remove the `replace` line from
 `go.mod` and run `go mod download` to fetch the actual dependency.
 
+## Setup script
+
+Before running the load tests you can execute `./setup.sh` to fetch the Go
+dependencies and download the sample media files:
+
+```bash
+./setup.sh
+```
+
 ## Running the load test
 
 The easiest way to run the test is via the interactive helper script:
