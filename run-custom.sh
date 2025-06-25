@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 echo "🚀 LiveKit Load Test Launcher"
 echo "============================="
@@ -8,6 +9,13 @@ read -p "👥 Bots per room: " BOTS_PER_ROOM
 read -p "⏱️ Duration (e.g., 60s or 10m): " DURATION
 read -p "🐛 Enable debug logging? (y/n): " DEBUG_LOG
 read -p "💾 Save logs to JSON file? (y/n): " SAVE_LOG
+
+for f in sample720p.ivf sample.ogg; do
+  if [[ ! -f $f ]]; then
+    echo "Missing media file: $f" >&2
+    exit 1
+  fi
+done
 
 ARGS="-rooms $NUM_ROOMS -bots $BOTS_PER_ROOM -d $DURATION \
 -url wss://meet.cst.ro -token-url https://meet.cst.ro/token \
