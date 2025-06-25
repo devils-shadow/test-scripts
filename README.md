@@ -6,7 +6,7 @@ participants against a LiveKit server for basic stress testing.
 
 ## Setup
 
-1. Install **Go 1.20+** on your machine.
+1. Install **Go 1.24.3** on your machine.
 2. Clone this repository and change into the project directory.
 3. Place `sample720p.ivf` and `sample.ogg` media files in the same directory.
    These files are published by each bot when it joins a room.
